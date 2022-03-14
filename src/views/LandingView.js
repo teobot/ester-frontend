@@ -2,10 +2,10 @@ import { useContext } from "react";
 
 import "../css/App.css";
 
-import { GlobalContext } from "../content/GlobalContext";
+import { GlobalContext } from "../context/GlobalContext";
 
 function App() {
-  const { hostGame, joinGame } = useContext(GlobalContext);
+  const { hostGame, goToJoinCodeView } = useContext(GlobalContext);
 
   const buttonStyle = {
     fontSize: 68,
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={joinGame} style={buttonStyle}>
+      <button onClick={goToJoinCodeView} style={buttonStyle}>
         JOIN
       </button>
       <button onClick={hostGame} style={buttonStyle}>

@@ -8,10 +8,11 @@ import "./css/index.css";
 
 import LandingView from "./views/LandingView";
 import EstimateView from "./views/EstimateView";
-import JoinView from "./views/JoinView";
+import JoinCodeView from "./views/JoinCodeView";
 import UserJoinView from "./views/UserJoinView";
+import UserVotingView from "./views/UserVotingView";
 
-import GlobalContextProvider from "./content/GlobalContext";
+import GlobalContextProvider from "./context/GlobalContext";
 
 import reportWebVitals from "./reportWebVitals";
 
@@ -21,9 +22,10 @@ const Main = () => {
       <GlobalContextProvider>
         <Routes>
           <Route path="/" element={<LandingView />} />
-          <Route path="/join/" element={<JoinView />} />
-          <Route path="/join/:joinCode" element={<UserJoinView />} />
+          <Route path="/join/" element={<JoinCodeView />} />
+          <Route path="/join/:code" element={<JoinCodeView />} />
           <Route path="/estimate" element={<EstimateView />} />
+          <Route path="/voting" element={<UserVotingView />} />
         </Routes>
       </GlobalContextProvider>
     </BrowserRouter>

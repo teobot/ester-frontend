@@ -1,8 +1,6 @@
 import { useContext, useRef, useEffect, createContext } from "react";
 
-import { useNavigate } from "react-router-dom";
-
-import { GlobalContext } from "../content/GlobalContext";
+import { GlobalContext } from "../context/GlobalContext";
 
 import GetDimensions from "../helpers/GetDimensions";
 
@@ -10,10 +8,21 @@ import UserDisplayRow from "../components/UserDisplayRow";
 
 import QRCode from "react-qr-code";
 
+import { CircularProgressbarWithChildren } from "react-circular-progressbar";
+
+import "react-circular-progressbar/dist/styles.css";
+
 export const EstimateContext = createContext();
 
 export default function EstimateView() {
-  const { gameData } = useContext(GlobalContext);
+  const {
+    state,
+    refreshGameData,
+    reveal,
+    revote,
+    amountUsersVoted,
+    amountUsersPresent,
+  } = useContext(GlobalContext);
 
   const estimateRef = useRef();
 
@@ -21,53 +30,91 @@ export default function EstimateView() {
     GetDimensions(estimateRef);
 
   useEffect(() => {
-    console.log(gameData);
+    // refresh the game data every second
+    const interval = setInterval(() => {
+      refreshGameData();
+    }, state.refreshTime);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
-  if (!gameData) {
-    return null;
-  } else {
-    return (
-      <div id="estimate-container">
-        <div id="estimate-header">
-          <div id="estimate-header-left">
-            <button>Reveal</button>
-            <button>Revote</button>
-          </div>
-          <div id="estimate-header-right">
-            <div>
-              <QRCode
-                value={window.location.origin + `/join/abc123`}
-                size={215}
-              />
-              <div className="qr-code-subtext">abc123</div>
-            </div>
+  return (
+    <div id="estimate-container">
+      <div id="estimate-header">
+        <div id="estimate-header-left">
+          <h2 className="roboto">Game Details</h2>
+          <Button onclick={reveal} text="Reveal" active={state.game.reveal} />
+          <Button
+            onclick={revote}
+            text={`Revote - ${amountUsersVoted} of ${amountUsersPresent} have voted`}
+            active={state.game.revote}
+          />
+          <Button onclick={refreshGameData} text="Refresh" active={false} />
+        </div>
+        <div id="estimate-header-left">
+          <div style={{ width: 200, height: 200 }}>
+            <CircularProgressbarWithChildren
+              value={(amountUsersVoted / amountUsersPresent) * 100}
+            >
+              <div style={{ fontSize: "100%", marginTop: -5 }} className="roboto">
+                <strong>
+                  {amountUsersVoted} of {amountUsersPresent}
+                </strong>{" "}
+                have voted
+              </div>
+            </CircularProgressbarWithChildren>
           </div>
         </div>
-        <EstimateContext.Provider
-          value={{ estimateBodyWidth, estimateBodyHeight }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-            ref={estimateRef}
-            id="estimate-body"
-          >
-            {/* Make a array of 5 items */}
-            {gameData.users.map((user, index) => (
-              <UserDisplayRow
-                voted={true}
-                key={`estimate-user-row-${index}`}
-                user={user}
-              />
-            ))}
+        <div id="estimate-header-right">
+          <div>
+            <QRCode
+              value={window.location.origin + `/join/${state.game.joinCode}`}
+              size={215}
+            />
+            <div className="qr-code-subtext">{state.game.joinCode}</div>
           </div>
-        </EstimateContext.Provider>
+        </div>
       </div>
-    );
-  }
+      <EstimateContext.Provider
+        value={{ estimateBodyWidth, estimateBodyHeight }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          ref={estimateRef}
+          id="estimate-body"
+        >
+          {/* Make a array of 5 items */}
+          {state?.game.users.map((user, index) => (
+            <UserDisplayRow
+              voted={user.voted}
+              key={`estimate-user-row-${index}`}
+              user={user}
+            />
+          ))}
+        </div>
+      </EstimateContext.Provider>
+    </div>
+  );
 }
+
+const Button = ({ onclick, text, active }) => {
+  return (
+    <button
+      className="roboto"
+      style={{
+        backgroundColor: active ? "#E6B9ED" : "white",
+      }}
+      onClick={() => {
+        onclick();
+      }}
+    >
+      {text}
+    </button>
+  );
+};

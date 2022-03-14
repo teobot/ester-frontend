@@ -8,10 +8,19 @@ const hexToRgb = (hex) => {
     : null;
 };
 
-const UserDisplaySection = ({ disabledColor, disabled, value, user }) => {
+const UserDisplaySection = ({
+  onMouseEnter = () => {},
+  onMouseLeave = () => {},
+  disabledColor,
+  disabled,
+  value,
+  user,
+}) => {
   const disableColour = hexToRgb(disabledColor || null) || "225, 235, 226";
   return (
     <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       className="roboto"
       style={{
         height: 70,
