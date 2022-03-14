@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 import ester from "../api/ester";
 
+import { io } from "socket.io-client";
+
 export const GlobalContext = React.createContext();
 
 const reducer = (state, action) => {
@@ -92,10 +94,53 @@ const fakeData = {
   refreshTime: 5000,
 };
 
+const realInit = {
+  user: null,
+  game: null,
+  refreshTime: 10000,
+};
+
 export default function GlobalContextProvider({ children }) {
-  const [state, dispatch] = React.useReducer(reducer, fakeData);
+  const [state, dispatch] = React.useReducer(reducer, realInit);
+  const [createdSocket, setCreatedSocket] = React.useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state.user && state.game && !createdSocket) {
+      setCreatedSocket(true);
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (createdSocket) {
+      const socket = io("http://localhost:8000");
+
+      console.log(state.game._id);
+
+      socket.on(state.game._id, (data) => {
+        switch (data.type) {
+          case "user:joined":
+          case "user:vote":
+          case "game:revote":
+          case "game:reveal":
+            refreshGameData();
+            break;
+          default:
+            break;
+        }
+      });
+
+      socket.on("connect", () => {
+        // listen to room messages
+        console.log("connected");
+      });
+
+      socket.on("disconnect", () => {
+        console.log("disconnected");
+      });
+    }
+  }, [createdSocket]);
 
   const refreshGameData = async () => {
     if (!state.game || !state.user) return;

@@ -12,32 +12,18 @@ import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 
 import "react-circular-progressbar/dist/styles.css";
 
+const { io } = require("socket.io-client");
+
 export const EstimateContext = createContext();
 
 export default function EstimateView() {
-  const {
-    state,
-    refreshGameData,
-    reveal,
-    revote,
-    amountUsersVoted,
-    amountUsersPresent,
-  } = useContext(GlobalContext);
+  const { state, reveal, revote, amountUsersVoted, amountUsersPresent } =
+    useContext(GlobalContext);
 
   const estimateRef = useRef();
 
   const { width: estimateBodyWidth, height: estimateBodyHeight } =
     GetDimensions(estimateRef);
-
-  useEffect(() => {
-    // refresh the game data every second
-    const interval = setInterval(() => {
-      refreshGameData();
-    }, state.refreshTime);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
 
   return (
     <div id="estimate-container">
@@ -50,14 +36,17 @@ export default function EstimateView() {
             text={`Revote - ${amountUsersVoted} of ${amountUsersPresent} have voted`}
             active={state.game.revote}
           />
-          <Button onclick={refreshGameData} text="Refresh" active={false} />
+          {/* <Button onclick={refreshGameData} text="Refresh" active={false} /> */}
         </div>
         <div id="estimate-header-left">
           <div style={{ width: 200, height: 200 }}>
             <CircularProgressbarWithChildren
               value={(amountUsersVoted / amountUsersPresent) * 100}
             >
-              <div style={{ fontSize: "100%", marginTop: -5 }} className="roboto">
+              <div
+                style={{ fontSize: "100%", marginTop: -5 }}
+                className="roboto"
+              >
                 <strong>
                   {amountUsersVoted} of {amountUsersPresent}
                 </strong>{" "}

@@ -3,20 +3,8 @@ import { useEffect, useContext, useState } from "react";
 import { GlobalContext } from "../context/GlobalContext";
 
 export default function UserVotingView() {
-  const { state, refreshGameData, vote } = useContext(GlobalContext);
+  const { state, vote } = useContext(GlobalContext);
   const [userVote, setUserVote] = useState(state.user.vote);
-
-  useEffect(() => {
-    // refresh the game data every second
-    const interval = setInterval(() => {
-      refreshGameData();
-    }, state.refreshTime);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  console.log(state);
 
   return (
     <div>
