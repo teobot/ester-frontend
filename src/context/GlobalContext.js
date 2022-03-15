@@ -91,7 +91,7 @@ const fakeData = {
     },
     __v: 6,
   },
-  refreshTime: 5000,
+  refreshTime: 10000,
 };
 
 const realInit = {

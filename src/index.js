@@ -9,7 +9,6 @@ import "./css/index.css";
 import LandingView from "./views/LandingView";
 import EstimateView from "./views/EstimateView";
 import JoinCodeView from "./views/JoinCodeView";
-import UserJoinView from "./views/UserJoinView";
 import UserVotingView from "./views/UserVotingView";
 
 import GlobalContextProvider from "./context/GlobalContext";
