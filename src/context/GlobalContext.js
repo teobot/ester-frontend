@@ -103,6 +103,20 @@ const realInit = {
 export default function GlobalContextProvider({ children }) {
   const [state, dispatch] = React.useReducer(reducer, realInit);
   const [createdSocket, setCreatedSocket] = React.useState(false);
+  const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+
+  useEffect(() => {
+    // make a listen to window resize and change the state
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const navigate = useNavigate();
 
@@ -197,6 +211,8 @@ export default function GlobalContextProvider({ children }) {
       navigate("/voting");
     } catch (error) {
       console.log(error);
+      // return error message
+      return error.response.data.error
     }
   };
 
@@ -297,6 +313,8 @@ export default function GlobalContextProvider({ children }) {
         amountUsersVoted,
         amountUsersPresent,
         kickUser,
+        windowHeight,
+        windowWidth,
       }}
     >
       {children}
