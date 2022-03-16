@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import ester, { domain } from "../api/ester";
+import ester, { domain, environment } from "../api/ester";
 
 import { io } from "socket.io-client";
 
@@ -51,7 +51,7 @@ export default function GlobalContextProvider({ children }) {
 
   useEffect(() => {
     if (createdSocket) {
-      const socket = io(`${domain}:8000`);
+      const socket = io(domain + environment === "development" ? ":3333" : "");
 
       console.log(state.game._id);
 

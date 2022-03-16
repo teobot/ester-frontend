@@ -2,7 +2,7 @@ import axios from "axios";
 
 const productionDomain = "https://ester-api.herokuapp.com";
 const developmentDomain = "http://localhost";
-const environment = process.env.NODE_ENV;
+export const environment = process.env.NODE_ENV;
 
 export const domain =
   environment === "development" ? developmentDomain : productionDomain;
