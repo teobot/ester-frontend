@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import ester from "../api/ester";
+import ester, { domain } from "../api/ester";
 
 import { io } from "socket.io-client";
 
@@ -15,83 +15,6 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-};
-
-const fakeData = {
-  user: {
-    vote: 0,
-    voted: false,
-    type: "creator",
-    color: "",
-    _id: "622f632396c4e5974d8cc91d",
-    name: "John Doe",
-  },
-  game: {
-    users: [
-      {
-        vote: 4.5,
-        voted: false,
-        type: "user",
-        color: "#BDB9ED",
-        _id: "622f632696c4e5974d8cc922",
-        name: "Theo",
-      },
-      {
-        vote: 4,
-        voted: false,
-        type: "user",
-        color: "#E6B9ED",
-        _id: "622f632996c4e5974d8cc927",
-        name: "Theo2",
-      },
-      {
-        vote: 4.5,
-        voted: false,
-        type: "user",
-        color: "#BDB9ED",
-        _id: "622f632696c4e5974d8cc922",
-        name: "Theo",
-      },
-      {
-        vote: 4,
-        voted: false,
-        type: "user",
-        color: "#E6B9ED",
-        _id: "622f632996c4e5974d8cc927",
-        name: "Theo2",
-      },
-      {
-        vote: 4.5,
-        voted: false,
-        type: "user",
-        color: "#BDB9ED",
-        _id: "622f632696c4e5974d8cc922",
-        name: "Theo",
-      },
-      {
-        vote: 4,
-        voted: false,
-        type: "user",
-        color: "#E6B9ED",
-        _id: "622f632996c4e5974d8cc927",
-        name: "Theo2",
-      },
-    ],
-    reveal: true,
-    revote: false,
-    _id: "622f632396c4e5974d8cc91e",
-    joinCode: "fEWC",
-    creator: {
-      vote: 0,
-      voted: false,
-      type: "creator",
-      color: "",
-      _id: "622f632396c4e5974d8cc91d",
-      name: "John Doe",
-    },
-    __v: 6,
-  },
-  refreshTime: 10000,
 };
 
 const realInit = {
@@ -128,7 +51,7 @@ export default function GlobalContextProvider({ children }) {
 
   useEffect(() => {
     if (createdSocket) {
-      const socket = io("http://localhost:8000");
+      const socket = io(`${domain}:8000`);
 
       console.log(state.game._id);
 
@@ -212,7 +135,7 @@ export default function GlobalContextProvider({ children }) {
     } catch (error) {
       console.log(error);
       // return error message
-      return error.response.data.error
+      return error.response.data.error;
     }
   };
 
