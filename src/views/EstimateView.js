@@ -1,4 +1,4 @@
-import { useContext, useRef, useEffect, createContext } from "react";
+import { useContext, useRef, createContext } from "react";
 
 import { Navigate } from "react-router-dom";
 
@@ -15,7 +15,6 @@ import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import Button from "@mui/material/Button";
 
 import "react-circular-progressbar/dist/styles.css";
-import { Typography } from "@mui/material";
 
 export const EstimateContext = createContext();
 
