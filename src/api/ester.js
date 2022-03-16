@@ -1,19 +1,29 @@
 import axios from "axios";
 
-const BACKEND_URL = "https://ester-api.herokuapp.com/api/v1";
+const productionDomain = "https://ester-api.herokuapp.com";
+const developmentDomain = "http://localhost";
+const environment = process.env.NODE_ENV;
 
-export const url =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3333/api/v1"
-    : BACKEND_URL;
+export const domain =
+  environment === "development" ? developmentDomain : productionDomain;
 
 const AxiosInstance = () => {
+  let url = domain;
+
+  if(environment === "development") {
+    url += ":3333";
+  } else if (environment === "production") {
+    // do nothing
+  }
+  
+  url += "/api/v1"
+
   console.log("====================================");
   console.log(`USING BACKEND URL: ${url}`);
   console.log("====================================");
   const instance = axios.create({
     baseURL: url,
-    timeout: 15000,
+    timeout: 10000,
   });
 
   delete instance.defaults.headers.common["Accept"];
