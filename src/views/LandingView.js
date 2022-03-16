@@ -55,7 +55,7 @@ function App() {
             fontWeight: "bold",
           }}
         >
-          Ester
+          Estr
         </Typography>
         <div
           style={{
