@@ -4,11 +4,11 @@ const productionDomain = "https://ester-api.herokuapp.com";
 const developmentDomain = "http://localhost";
 export const environment = process.env.NODE_ENV;
 
-export const domain =
+export const backendDomain =
   environment === "development" ? developmentDomain : productionDomain;
 
 const AxiosInstance = () => {
-  let url = domain;
+  let url = backendDomain;
 
   if(environment === "development") {
     url += ":3333";

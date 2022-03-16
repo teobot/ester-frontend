@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-import ester, { domain, environment } from "../api/ester";
+import ester, { backendDomain, environment } from "../api/ester";
 
 import { io } from "socket.io-client";
 
@@ -51,9 +51,9 @@ export default function GlobalContextProvider({ children }) {
 
   useEffect(() => {
     if (createdSocket) {
-      const socket = io(domain + environment === "development" ? ":3333" : "");
-
-      console.log(state.game._id);
+      const socket = io(
+        backendDomain + (environment === "development" ? ":3333" : "")
+      );
 
       socket.on(state.game._id, (data) => {
         switch (data.type) {
@@ -70,7 +70,7 @@ export default function GlobalContextProvider({ children }) {
 
       socket.on("connect", () => {
         // listen to room messages
-        console.log("connected");
+        console.log("connected to socket");
       });
 
       socket.on("disconnect", () => {
