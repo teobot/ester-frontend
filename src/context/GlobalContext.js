@@ -20,7 +20,6 @@ const reducer = (state, action) => {
 const realInit = {
   user: null,
   game: null,
-  refreshTime: 10000,
 };
 
 export default function GlobalContextProvider({ children }) {
@@ -159,6 +158,7 @@ export default function GlobalContextProvider({ children }) {
       });
     } catch (error) {
       console.log(error);
+      navigate("/");
     }
   };
 
