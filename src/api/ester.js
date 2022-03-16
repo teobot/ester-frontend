@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "https://api-zester.herokuapp.com/api/v1";
+const BACKEND_URL = "https://ester-api.herokuapp.com/api/v1";
 
 export const url =
   process.env.NODE_ENV === "development"
