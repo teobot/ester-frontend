@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
+import Container from "@mui/material/Container";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 
 import { GlobalContext } from "../context/GlobalContext";
@@ -11,8 +12,7 @@ import { GlobalContext } from "../context/GlobalContext";
 import wave from "../images/wave.png";
 
 export default function JoinCodeView() {
-  const { joinGame, windowHeight, windowWidth } =
-    React.useContext(GlobalContext);
+  const { joinGame, windowWidth } = React.useContext(GlobalContext);
 
   let { code } = useParams();
 
@@ -32,22 +32,21 @@ export default function JoinCodeView() {
     }
 
     const res = await joinGame(joinCode, username);
-    
+
     if (res) {
       setError(error);
     }
   };
 
   return (
-    <div
+    <Container
+      maxWidth="sm"
       style={{
-        width: "100%",
         height: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#F0F0F0",
       }}
     >
       <div
@@ -65,86 +64,69 @@ export default function JoinCodeView() {
           transform: "rotate(180deg)",
         }}
       />
-      <div
+      <Container
         style={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
-          zIndex: 2,
-          height: "70%",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1,
+          borderRadius: 15,
         }}
       >
-        <Typography
-          variant="h1"
-          component="h2"
-          style={{
-            fontSize:
-              windowWidth < 1600
-                ? windowWidth > 600
-                  ? "calc(5vw + 100px)"
-                  : 75
-                : 175,
-            fontWeight: "bold",
-          }}
-        >
-          Join
-          <br />
-          Game
-        </Typography>
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            textAlign: "left",
             width: "100%",
-            padding: 8,
-            borderRadius: 10,
-            height: "100%",
           }}
         >
-          <div
+          <Typography
+            variant="h1"
+            component="h2"
             style={{
-              display: "flex",
-              flexDirection: "column",
-              width: "100%",
-              height: "100%",
-              alignItems: "center",
-              justifyContent:
-                windowWidth < 400 ? "space-between" : "space-evenly",
+              fontWeight: "bold",
+              fontSize: windowWidth / 15 + 100,
             }}
           >
-            {!code && (
-              <TextField
-                size="large"
-                label="Join Code"
-                color="info"
-                focused
-                fullWidth
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value)}
-              />
-            )}
+            Join <br /> Game
+          </Typography>
+        </div>
+        {!code && (
+          <>
             <TextField
               size="large"
-              label="Enter username"
-              color="secondary"
+              label="Join Code"
+              color="info"
               focused
               fullWidth
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value)}
             />
-            <IconButton
-              onClick={handleJoinGame}
-              color="secondary"
-              component="span"
-              size="large"
-            >
-              <LoginOutlinedIcon style={{ fontSize: 48 }} />
-            </IconButton>
-          </div>
-        </div>
-      </div>
-    </div>
+            <br />
+          </>
+        )}
+
+        <TextField
+          size="large"
+          label="Enter username"
+          color="secondary"
+          focused
+          fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <IconButton
+          onClick={handleJoinGame}
+          color="secondary"
+          component="span"
+          size="large"
+        >
+          <LoginOutlinedIcon style={{ fontSize: 48 }} />
+        </IconButton>
+      </Container>
+    </Container>
   );
 }
