@@ -6,7 +6,7 @@ import { GlobalContext } from "../context/GlobalContext";
 import UserDisplaySection from "./UserDisplaySection";
 import Border from "./Border";
 
-const UserDisplayRow = ({ voted, user }) => {
+const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
   const { state, kickUser } = React.useContext(GlobalContext);
   const [hover, setHover] = React.useState(false);
 
