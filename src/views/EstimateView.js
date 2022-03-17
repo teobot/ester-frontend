@@ -19,8 +19,14 @@ import "react-circular-progressbar/dist/styles.css";
 export const EstimateContext = createContext();
 
 export default function EstimateView() {
-  const { state, reveal, revote, amountUsersVoted, amountUsersPresent } =
-    useContext(GlobalContext);
+  const {
+    state,
+    reveal,
+    revote,
+    amountUsersVoted,
+    amountUsersPresent,
+    sortByVote,
+  } = useContext(GlobalContext);
 
   const estimateRef = useRef();
 
@@ -53,8 +59,28 @@ export default function EstimateView() {
   };
 
   const progressChartMessage = () => {
-    if(state.game.reveal) {
-      return "Reveal in progress";
+    if (state.game.reveal) {
+      // display the average vote
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Average vote:
+          <br />
+          <b style={{
+            fontSize: "2em",
+          }}>
+            {state.game.users.reduce((acc, user) => {
+              return acc + user.vote;
+            }, 0) / state.game.users.length}
+          </b>
+        </div>
+      );
     }
     if (amountUsersPresent === 0) {
       return <>Waiting for players</>;
@@ -81,32 +107,36 @@ export default function EstimateView() {
       <div id="estimate-container">
         <div id="estimate-header">
           <div id="estimate-header-left">
-            <Button
-              variant="contained"
-              disabled={state.game.reveal || amountUsersPresent === 0}
-              onClick={reveal}
-              size="large"
-              color={
-                amountUsersVoted === amountUsersPresent &&
-                amountUsersPresent !== 0
-                  ? "success"
-                  : "secondary"
-              }
-            >
-              {revealMessage()}
-            </Button>
-            <Button
-              variant="contained"
-              disabled={!state.game.reveal}
-              onClick={revote}
-              size="large"
-              color="secondary"
-            >
-              {revoteMessage()}
-            </Button>
+            <div className="game-button-container">
+              <Button
+                fullWidth
+                variant="contained"
+                disabled={state.game.reveal || amountUsersPresent === 0}
+                onClick={reveal}
+                size="large"
+                color={
+                  amountUsersVoted === amountUsersPresent &&
+                  amountUsersPresent !== 0
+                    ? "success"
+                    : "secondary"
+                }
+              >
+                {revealMessage()}
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                disabled={!state.game.reveal}
+                onClick={revote}
+                size="large"
+                color="secondary"
+              >
+                {revoteMessage()}
+              </Button>
+            </div>
           </div>
-          <div id="estimate-header-left">
-            <div style={{ width: 200, height: 200 }}>
+          <div id="estimate-header-center">
+            <div style={{ width: 175, height: 175 }}>
               <CircularProgressbarWithChildren
                 styles={{
                   path: {
@@ -120,7 +150,7 @@ export default function EstimateView() {
                 value={(amountUsersVoted / amountUsersPresent) * 100}
               >
                 <div
-                  style={{ fontSize: "100%", marginTop: -5 }}
+                  style={{ fontSize: "90%", marginTop: -5 }}
                   className="roboto"
                 >
                   {progressChartMessage()}
@@ -129,13 +159,11 @@ export default function EstimateView() {
             </div>
           </div>
           <div id="estimate-header-right">
-            <div>
-              <QRCode
-                value={window.location.origin + `/join/${state.game.joinCode}`}
-                size={215}
-              />
-              <div className="qr-code-subtext">{state.game.joinCode}</div>
-            </div>
+            <QRCode
+              value={window.location.origin + `/join/${state.game.joinCode}`}
+              size={150}
+            />
+            <div className="qr-code-subtext">{state.game.joinCode}</div>
           </div>
         </div>
         <EstimateContext.Provider
@@ -145,15 +173,17 @@ export default function EstimateView() {
             style={{
               display: "flex",
               flexDirection: "column",
-              justifyContent: "space-between",
+              justifyContent: "flex-start",
               alignItems: "center",
             }}
             ref={estimateRef}
             id="estimate-body"
           >
             {/* Make a array of 5 items */}
-            {state?.game.users.map((user, index) => (
+            {state?.game.users.sort(sortByVote).map((user, index) => (
               <UserDisplayRow
+                isLowest={index === 0}
+                isHighest={index === state.game.users.length - 1}
                 voted={user.voted}
                 key={`estimate-user-row-${index}`}
                 user={user}
@@ -165,19 +195,3 @@ export default function EstimateView() {
     );
   }
 }
-
-// const Button = ({ onclick, text, active }) => {
-//   return (
-//     <button
-//       className="roboto"
-//       style={{
-//         backgroundColor: active ? "#E6B9ED" : "white",
-//       }}
-//       onClick={() => {
-//         onclick();
-//       }}
-//     >
-//       {text}
-//     </button>
-//   );
-// };
