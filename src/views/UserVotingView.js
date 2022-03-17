@@ -4,8 +4,6 @@ import { Navigate } from "react-router-dom";
 
 import { GlobalContext } from "../context/GlobalContext";
 
-import GetDimensions from "../helpers/GetDimensions";
-
 import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
@@ -50,11 +48,13 @@ export default function UserVotingView() {
               border: "1px solid rgba(0, 0, 0, 0.15)",
               boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.25)",
               fontWeight: "bold",
-              color: "black"
+              color: "black",
             }}
             variant="rounded"
           >
-            {state.user.name}
+            {state.user.name.length > 4
+              ? state.user.name.toString().substring(0, 4)
+              : state.user.name}
           </Avatar>
         </div>
         <div
