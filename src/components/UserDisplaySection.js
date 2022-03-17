@@ -17,6 +17,9 @@ const UserDisplaySection = ({
   user,
 }) => {
   const disableColour = hexToRgb(disabledColor || null) || "225, 235, 226";
+  // trim the value to be always 4 characters long
+  const valueTrimmed =
+    value.length > 4 ? value.toString().substring(0, 4) : value;
   return (
     <div
       onMouseEnter={onMouseEnter}
@@ -37,7 +40,7 @@ const UserDisplaySection = ({
         color: disabled ? "rgba(0, 0, 0, 0.35)" : "#000000",
       }}
     >
-      {value}
+      {valueTrimmed}
     </div>
   );
 };
