@@ -48,6 +48,16 @@ export default function GlobalContextProvider({ children }) {
     }
   }, [state]);
 
+  const sortByVote = (a, b) => {
+    if (!state.game.reveal) {
+      // if not revealed, sort by alphabetical order
+      return a.name.localeCompare(b.name);
+    } else {
+      // if revealed, sort by vote value
+      return a.vote - b.vote;
+    }
+  };
+
   useEffect(() => {
     if (createdSocket) {
       const socket = io(
@@ -238,6 +248,7 @@ export default function GlobalContextProvider({ children }) {
         kickUser,
         windowHeight,
         windowWidth,
+        sortByVote,
       }}
     >
       {children}
