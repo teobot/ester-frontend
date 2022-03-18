@@ -27,6 +27,7 @@ export default function GlobalContextProvider({ children }) {
   const [createdSocket, setCreatedSocket] = React.useState(false);
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   useEffect(() => {
     // make a listen to window resize and change the state
@@ -227,6 +228,17 @@ export default function GlobalContextProvider({ children }) {
     }
   };
 
+  const wakeUpRequest = async () => {
+    setIsLoading(true);
+    try {
+      const wakeup = await ester.get("");
+      console.log(wakeup.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setIsLoading(false);
+  };
+
   const amountUsersVoted = state.game?.users
     ? state.game?.users.filter((user) => user.voted).length
     : 0;
@@ -249,6 +261,8 @@ export default function GlobalContextProvider({ children }) {
         windowHeight,
         windowWidth,
         sortByVote,
+        wakeUpRequest,
+        isLoading,
       }}
     >
       {children}
