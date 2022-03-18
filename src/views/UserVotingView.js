@@ -7,6 +7,8 @@ import { GlobalContext } from "../context/GlobalContext";
 import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
+import Paper from "@mui/material/Paper";
+import ConfettiCannon from "../components/ConfettiCannon";
 
 export default function UserVotingView() {
   const { state, vote } = useContext(GlobalContext);
@@ -14,6 +16,10 @@ export default function UserVotingView() {
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
 
   const screenRef = useRef(null);
+
+  const userVoted = async (v) => {
+    await vote(v);
+  };
 
   if (!state.user || !vote) {
     // : redirect to landing page
@@ -59,13 +65,16 @@ export default function UserVotingView() {
         </div>
         <div
           style={{
+            position: "relative",
             display: "flex",
             flex: 5,
             alignItems: "center",
             justifyContent: "center",
+            padding: "0px 25px",
           }}
         >
           <VoteDisplay voted={state.user.voted} vote={userVote} />
+          <ConfettiCannon state={state} />
         </div>
         <div
           style={{
@@ -80,17 +89,25 @@ export default function UserVotingView() {
           <Button
             variant="contained"
             onClick={() => {
-              vote(userVote);
+              userVoted(userVote);
             }}
+            disabled={state.user.voted}
             color={state.user.voted ? "secondary" : "success"}
             size="large"
             style={{
               width: "100%",
+              height: "20%",
+              fontSize: "2rem",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {state.user.voted ? "Revote" : "Vote"}
+            {state.user.voted ? "vote locked" : "vote"}
           </Button>
           <Slider
+            disabled={state.user.voted}
             key={`slider-${state.user._id}`}
             size="medium"
             value={userVote}
@@ -112,23 +129,23 @@ export default function UserVotingView() {
 
 const VoteDisplay = ({ vote, voted }) => {
   return (
-    <div
+    <Paper
+      elevation={voted ? 12 : 1}
       className="roboto"
       style={{
         height: 300,
-        width: 300,
-        backgroundColor: "white",
-        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-        borderRadius: "50%",
-        color: "black",
+        width: "100%",
+        borderRadius: voted ? 30 : 10,
+        fontWeight: voted ? 700 : 400,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontSize: "7rem",
-        border: voted ? "10px solid rgba(0, 0, 0, 0.15)" : "none",
+        transition: "all 0.25s ease-in-out",
+        position: "relative",
       }}
     >
       {vote.toString()}
-    </div>
+    </Paper>
   );
 };

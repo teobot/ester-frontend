@@ -44,6 +44,8 @@ export default function EstimateView() {
     }
     if (amountUsersVoted === amountUsersPresent) {
       return "All users have voted.";
+    } else {
+      return "Not everyone has voted yet.";
     }
   };
 
@@ -59,28 +61,38 @@ export default function EstimateView() {
   };
 
   const progressChartMessage = () => {
+    let percentage = Math.round(
+      state.game.users.reduce((acc, user) => {
+        return acc + user.vote;
+      }, 0) / state.game.users.length
+    );
     if (state.game.reveal) {
-      // display the average vote
-      return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          Average vote:
-          <br />
-          <b style={{
-            fontSize: "2em",
-          }}>
-            {state.game.users.reduce((acc, user) => {
-              return acc + user.vote;
-            }, 0) / state.game.users.length}
-          </b>
-        </div>
-      );
+      if (percentage) {
+        // display the average vote
+        return (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Average vote:
+            <br />
+            <b
+              style={{
+                fontSize: "2em",
+              }}
+            >
+              {/* round to 2 decimal places */}
+              {percentage.toFixed(2)}
+            </b>
+          </div>
+        );
+      } else {
+        return "Votes are revealed";
+      }
     }
     if (amountUsersPresent === 0) {
       return <>Waiting for players</>;
