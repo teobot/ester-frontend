@@ -1,4 +1,5 @@
-import React from "react";
+import { useEffect, useState, useContext } from "react";
+
 import { useParams } from "react-router";
 
 import Typography from "@mui/material/Typography";
@@ -10,15 +11,17 @@ import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import { GlobalContext } from "../context/GlobalContext";
 
 import wave from "../images/wave.png";
+import ServerConnectionIcon from "../components/ServerConnectionIcon";
 
 export default function JoinCodeView() {
-  const { joinGame, windowWidth } = React.useContext(GlobalContext);
+  const { joinGame, windowWidth, isLoading, wakeUpRequest } =
+    useContext(GlobalContext);
 
   let { code } = useParams();
 
-  const [joinCode, setJoinCode] = React.useState(code || "");
-  const [username, setUsername] = React.useState("");
-  const [error, setError] = React.useState("");
+  const [joinCode, setJoinCode] = useState(code || "");
+  const [username, setUsername] = useState("");
+  const [error, setError] = useState("");
 
   const handleJoinGame = async () => {
     if (joinCode.length === 0) {
@@ -37,6 +40,10 @@ export default function JoinCodeView() {
       setError(error);
     }
   };
+
+  useEffect(() => {
+    wakeUpRequest();
+  }, []);
 
   return (
     <Container
@@ -64,6 +71,7 @@ export default function JoinCodeView() {
           transform: "rotate(180deg)",
         }}
       />
+      <ServerConnectionIcon isLoading={isLoading} />
       <Container
         style={{
           display: "flex",
@@ -104,6 +112,7 @@ export default function JoinCodeView() {
               fullWidth
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value)}
+              disabled={isLoading}
             />
             <br />
           </>
@@ -117,12 +126,14 @@ export default function JoinCodeView() {
           fullWidth
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          disabled={isLoading}
         />
         <IconButton
           onClick={handleJoinGame}
           color="secondary"
           component="span"
           size="large"
+          disabled={isLoading}
         >
           <LoginOutlinedIcon style={{ fontSize: 48 }} />
         </IconButton>

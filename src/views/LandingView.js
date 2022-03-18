@@ -1,16 +1,23 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 
 import "../css/App.css";
 
 import { GlobalContext } from "../context/GlobalContext";
 
 import wave from "../images/wave.png";
+import ServerConnectionIcon from "../components/ServerConnectionIcon";
 
 function App() {
-  const { hostGame, goToJoinCodeView } = useContext(GlobalContext);
+  const { hostGame, goToJoinCodeView, wakeUpRequest, isLoading } =
+    useContext(GlobalContext);
+
+  useEffect(() => {
+    wakeUpRequest();
+  }, []);
 
   return (
     <div
@@ -24,6 +31,7 @@ function App() {
         backgroundColor: "#F0F0F0",
       }}
     >
+      <ServerConnectionIcon isLoading={isLoading} />
       <div
         style={{
           position: "absolute",
@@ -71,19 +79,27 @@ function App() {
         >
           <ActionButton
             onClick={goToJoinCodeView}
-            color="secondary"
+            colour="secondary"
             content={"Join"}
+            isLoading={isLoading}
           />
-          <ActionButton onClick={hostGame} color="info" content={"Host"} />
+          <ActionButton
+            isLoading={isLoading}
+            onClick={hostGame}
+            colour="info"
+            content={"Host"}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-const ActionButton = ({ content, onClick, color }) => {
+const ActionButton = ({ content, onClick, colour, isLoading }) => {
   return (
-    <Button
+    <LoadingButton
+      loading={isLoading}
+      loadingPosition="end"
       style={{
         borderRadius: 10,
         width: 180,
@@ -92,10 +108,10 @@ const ActionButton = ({ content, onClick, color }) => {
       }}
       onClick={onClick}
       variant="contained"
-      color={color}
+      color={colour}
     >
       {content}
-    </Button>
+    </LoadingButton>
   );
 };
 
