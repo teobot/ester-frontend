@@ -44,6 +44,8 @@ export default function EstimateView() {
     }
     if (amountUsersVoted === amountUsersPresent) {
       return "All users have voted.";
+    } else {
+      return "Not everyone has voted yet.";
     }
   };
 
@@ -72,9 +74,11 @@ export default function EstimateView() {
         >
           Average vote:
           <br />
-          <b style={{
-            fontSize: "2em",
-          }}>
+          <b
+            style={{
+              fontSize: "2em",
+            }}
+          >
             {state.game.users.reduce((acc, user) => {
               return acc + user.vote;
             }, 0) / state.game.users.length}
