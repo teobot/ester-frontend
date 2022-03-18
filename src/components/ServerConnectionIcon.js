@@ -12,22 +12,20 @@ export default function ServerConnectionIcon({ isLoading }) {
         right: 0,
         zIndex: 1,
         padding: 6,
-        width: "8%",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-evenly",
         fontSize: 16,
       }}
     >
       {isLoading ? (
         <>
-          <b>connecting</b>
+          <b style={{ marginRight: 10 }}>connecting</b>
           <CircularProgress color="primary" style={{ height: 20, width: 20 }} />
         </>
       ) : (
         <>
-          <b>connected</b>
+          <b style={{ marginRight: 10 }}>connected</b>
           <CheckCircleIcon color="success" style={{ height: 24, width: 24 }} />
         </>
       )}
