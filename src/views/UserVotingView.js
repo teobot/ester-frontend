@@ -1,4 +1,4 @@
-import { useRef, useContext, useState, useEffect } from "react";
+import { useRef, useContext, useState } from "react";
 
 import { Navigate } from "react-router-dom";
 
@@ -8,40 +8,18 @@ import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Paper from "@mui/material/Paper";
-
-import ConfettiExplosion from "@reonomy/react-confetti-explosion";
+import ConfettiCannon from "../components/ConfettiCannon";
 
 export default function UserVotingView() {
-  const { state, vote, windowWidth } = useContext(GlobalContext);
+  const { state, vote } = useContext(GlobalContext);
 
-  const [isExploding, setIsExploding] = useState(false);
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
 
   const screenRef = useRef(null);
 
-  const ExplodeProps = {
-    force: 0.7,
-    particleCount: 100,
-    duration: 4000,
-    floorHeight: 1000,
-    floorWidth: 1000,
-  };
-
   const userVoted = async (v) => {
-    await vote(v).then(() => {
-      setIsExploding(true);
-    });
+    await vote(v);
   };
-
-  useEffect(() => {
-    if (isExploding) {
-      setTimeout(() => {
-        setIsExploding(false);
-      }, ExplodeProps.duration);
-    }
-  }, [isExploding]);
-
-  console.log(state);
 
   if (!state.user || !vote) {
     // : redirect to landing page
@@ -87,6 +65,7 @@ export default function UserVotingView() {
         </div>
         <div
           style={{
+            position: "relative",
             display: "flex",
             flex: 5,
             alignItems: "center",
@@ -95,6 +74,7 @@ export default function UserVotingView() {
           }}
         >
           <VoteDisplay voted={state.user.voted} vote={userVote} />
+          <ConfettiCannon state={state} />
         </div>
         <div
           style={{
@@ -124,20 +104,6 @@ export default function UserVotingView() {
               justifyContent: "center",
             }}
           >
-            {isExploding ? (
-              <div
-                key="explosion-container"
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  right: "50%",
-                  bottom: "50%",
-                }}
-              >
-                <ConfettiExplosion key="explosion-object" {...ExplodeProps} />
-              </div>
-            ) : null}
             {state.user.voted ? "vote locked" : "vote"}
           </Button>
           <Slider
