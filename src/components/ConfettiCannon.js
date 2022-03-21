@@ -4,17 +4,21 @@ import ConfettiExplosion from "@reonomy/react-confetti-explosion";
 
 export default function ConfettiCannon({ state }) {
   const [isExploding, setIsExploding] = useState(false);
-  const [hasExploded, setHasExploded] = useState(false);
+  const [preReveal, setPreReveal] = useState(false);
 
   useEffect(() => {
-    console.log(state.game.reveal);
-    if (state.game.reveal && !hasExploded) {
-      setIsExploding(true);
-      console.log("exploding", state.game.reveal);
-    } else if (!state.game.reveal && hasExploded) {
-      setHasExploded(false);
+    if (preReveal !== state.game.reveal) {
+      // the game reveal state has changed
+      setPreReveal(state.game.reveal);
     }
   }, [state]);
+
+  useEffect(() => {
+    if (state.game.reveal) {
+      // reveal has changed and nows its true
+      setIsExploding(true);
+    }
+  }, [preReveal]);
 
   const ExplodeProps = {
     force: 0.7,
@@ -28,7 +32,6 @@ export default function ConfettiCannon({ state }) {
     if (isExploding) {
       setTimeout(() => {
         setIsExploding(false);
-        setHasExploded(true);
       }, ExplodeProps.duration);
     }
   }, [isExploding]);
