@@ -28,6 +28,7 @@ export default function GlobalContextProvider({ children }) {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [amountUsersVoted, setAmountUsersVoted] = React.useState(0);
 
   useEffect(() => {
     // make a listen to window resize and change the state
@@ -96,6 +97,11 @@ export default function GlobalContextProvider({ children }) {
         userId: state.user._id,
         gameId: state.game._id,
       });
+      if (!res.data.game.reveal && res.data.game.users) {
+        setAmountUsersVoted(
+          res.data.game.users.filter((user) => user.voted).length
+        );
+      }
       dispatch({
         type: "set",
         payload: {
@@ -179,6 +185,7 @@ export default function GlobalContextProvider({ children }) {
         userId: state.user._id,
         gameId: state.game._id,
       });
+
       dispatch({
         type: "set",
         payload: {
@@ -197,6 +204,7 @@ export default function GlobalContextProvider({ children }) {
         userId: state.user._id,
         gameId: state.game._id,
       });
+      setAmountUsersVoted(0);
       dispatch({
         type: "set",
         payload: {
@@ -231,6 +239,7 @@ export default function GlobalContextProvider({ children }) {
   const wakeUpRequest = async () => {
     setIsLoading(true);
     try {
+      // wait 5 seconds
       const wakeup = await ester.get("");
       console.log(wakeup.data);
     } catch (error) {
@@ -239,9 +248,6 @@ export default function GlobalContextProvider({ children }) {
     setIsLoading(false);
   };
 
-  const amountUsersVoted = state.game?.users
-    ? state.game?.users.filter((user) => user.voted).length
-    : 0;
   const amountUsersPresent = state.game?.users ? state.game?.users.length : 0;
 
   return (
