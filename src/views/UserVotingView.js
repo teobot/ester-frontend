@@ -8,12 +8,15 @@ import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Paper from "@mui/material/Paper";
+
 import ConfettiCannon from "../components/ConfettiCannon";
+import VotingScreenDrawer from "../components/VotingScreenDrawer";
 
 export default function UserVotingView() {
   const { state, vote } = useContext(GlobalContext);
 
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
+  const [drawer, setDrawer] = useState(false);
 
   const screenRef = useRef(null);
 
@@ -26,103 +29,107 @@ export default function UserVotingView() {
     return <Navigate to="/" />;
   } else {
     return (
-      <div
-        ref={screenRef}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          height: "100%",
-          backgroundColor: state.user.color,
-        }}
-      >
+      <>
+        <VotingScreenDrawer open={drawer} setDrawer={setDrawer} />
         <div
+          ref={screenRef}
           style={{
             display: "flex",
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "flex-end",
-            padding: 5,
-          }}
-        >
-          <Avatar
-            className="roboto"
-            style={{
-              backgroundColor: state.user.color,
-              width: 75,
-              height: 75,
-              border: "1px solid rgba(0, 0, 0, 0.15)",
-              boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.25)",
-              fontWeight: "bold",
-              color: "black",
-            }}
-            variant="rounded"
-          >
-            {state.user.name.length > 4
-              ? state.user.name.toString().substring(0, 4)
-              : state.user.name}
-          </Avatar>
-        </div>
-        <div
-          style={{
-            position: "relative",
-            display: "flex",
-            flex: 5,
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "0px 25px",
-          }}
-        >
-          <VoteDisplay voted={state.user.voted} vote={userVote} />
-          <ConfettiCannon state={state} />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flex: 5,
-            alignItems: "center",
-            justifyContent: "space-around",
             flexDirection: "column",
-            padding: "0px 25px",
+            width: "100%",
+            height: "100%",
+            backgroundColor: state.user.color,
           }}
         >
-          <Button
-            variant="contained"
-            onClick={() => {
-              userVoted(userVote);
-            }}
-            disabled={state.user.voted || state.game.reveal}
-            color={state.user.voted ? "secondary" : "success"}
-            size="large"
+          <div
             style={{
-              width: "100%",
-              height: "20%",
-              fontSize: "2rem",
+              display: "flex",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "flex-end",
+              padding: 5,
+            }}
+          >
+            <Avatar
+              onClick={() => setDrawer(true)}
+              className="roboto"
+              style={{
+                backgroundColor: state.user.color,
+                width: 75,
+                height: 75,
+                border: "1px solid rgba(0, 0, 0, 0.15)",
+                boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.25)",
+                fontWeight: "bold",
+                color: "black",
+              }}
+              variant="rounded"
+            >
+              {state.user.name.length > 4
+                ? state.user.name.toString().substring(0, 4)
+                : state.user.name}
+            </Avatar>
+          </div>
+          <div
+            style={{
               position: "relative",
               display: "flex",
+              flex: 5,
               alignItems: "center",
               justifyContent: "center",
+              padding: "0px 25px",
             }}
           >
-            {state.user.voted ? "vote locked" : "vote"}
-          </Button>
-          <Slider
-            disabled={state.user.voted}
-            key={`slider-${state.user._id}`}
-            size="medium"
-            value={userVote}
-            aria-label="Default"
-            valueLabelDisplay="auto"
-            min={0}
-            max={5}
-            step={0.5}
-            marks
-            onChange={(e, v) => {
-              setUserVote(v);
+            <VoteDisplay voted={state.user.voted} vote={userVote} />
+            <ConfettiCannon state={state} />
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flex: 5,
+              alignItems: "center",
+              justifyContent: "space-around",
+              flexDirection: "column",
+              padding: "0px 25px",
             }}
-          />
+          >
+            <Button
+              variant="contained"
+              onClick={() => {
+                userVoted(userVote);
+              }}
+              disabled={state.user.voted || state.game.reveal}
+              color={state.user.voted ? "secondary" : "success"}
+              size="large"
+              style={{
+                width: "100%",
+                height: "20%",
+                fontSize: "2rem",
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {state.user.voted ? "vote locked" : "vote"}
+            </Button>
+            <Slider
+              disabled={state.user.voted}
+              key={`slider-${state.user._id}`}
+              size="medium"
+              value={userVote}
+              aria-label="Default"
+              valueLabelDisplay="auto"
+              min={0}
+              max={5}
+              step={0.5}
+              marks
+              onChange={(e, v) => {
+                setUserVote(v);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
