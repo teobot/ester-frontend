@@ -91,7 +91,7 @@ export default function UserVotingView() {
             onClick={() => {
               userVoted(userVote);
             }}
-            disabled={state.user.voted}
+            disabled={state.user.voted || state.game.reveal}
             color={state.user.voted ? "secondary" : "success"}
             size="large"
             style={{
