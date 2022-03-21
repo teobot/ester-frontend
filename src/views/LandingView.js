@@ -3,7 +3,6 @@ import { useContext, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import LoadingButton from "@mui/lab/LoadingButton";
 
-
 import "../css/App.css";
 
 import { GlobalContext } from "../context/GlobalContext";
@@ -100,6 +99,7 @@ const ActionButton = ({ content, onClick, colour, isLoading }) => {
     <LoadingButton
       loading={isLoading}
       loadingPosition="end"
+      endIcon={<></>}
       style={{
         borderRadius: 10,
         width: 180,
