@@ -29,6 +29,12 @@ export default function GlobalContextProvider({ children }) {
   const [windowHeight, setWindowHeight] = React.useState(window.innerHeight);
   const [isLoading, setIsLoading] = React.useState(true);
   const [amountUsersVoted, setAmountUsersVoted] = React.useState(0);
+  const [enableConfetti, setEnableConfetti] = React.useState(
+    localStorage.getItem("enableConfetti") !== null
+      ? JSON.parse(localStorage.getItem("enableConfetti")).enableConfetti
+      : true
+  );
+  const [MEGAConfetti, setMEGAConfetti] = React.useState(false);
 
   useEffect(() => {
     // make a listen to window resize and change the state
@@ -269,6 +275,18 @@ export default function GlobalContextProvider({ children }) {
         sortByVote,
         wakeUpRequest,
         isLoading,
+        enableConfetti,
+        setEnableConfetti: (value) => {
+          setEnableConfetti(value);
+          localStorage.setItem(
+            "enableConfetti",
+            JSON.stringify({
+              enableConfetti: value,
+            })
+          );
+        },
+        MEGAConfetti,
+        setMEGAConfetti,
       }}
     >
       {children}
