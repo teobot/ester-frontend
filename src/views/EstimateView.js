@@ -61,39 +61,38 @@ export default function EstimateView() {
   };
 
   const progressChartMessage = () => {
-    let percentage = Math.round(
-      state.game.users.reduce((acc, user) => {
-        return acc + user.vote;
-      }, 0) / state.game.users.length
-    );
+    let userCount = 0;
+    const voteAccumulator = state.game.users.reduce((acc, user) => {
+      userCount++;
+      return acc + user.vote;
+    }, 0);
+    const voteAverage = voteAccumulator / userCount;
+
     if (state.game.reveal) {
-      if (percentage) {
-        // display the average vote
-        return (
-          <div
+      // display the average vote
+      return (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Average vote:
+          <br />
+          <b
             style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
+              fontSize: "2em",
             }}
           >
-            Average vote:
-            <br />
-            <b
-              style={{
-                fontSize: "2em",
-              }}
-            >
-              {/* round to 2 decimal places */}
-              {percentage.toFixed(2)}
-            </b>
-          </div>
-        );
-      } else {
-        return "Votes are revealed";
-      }
+            {/* round to 2 decimal places */}
+            {voteAverage.toFixed(2)}
+          </b>
+        </div>
+      );
     }
+
     if (amountUsersPresent === 0) {
       return <>Waiting for players</>;
     }
