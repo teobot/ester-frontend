@@ -78,6 +78,7 @@ export default function GlobalContextProvider({ children }) {
           case "user:vote":
           case "game:revote":
           case "game:reveal":
+          case "game:update":
             refreshGameData();
             break;
           default:
@@ -108,6 +109,7 @@ export default function GlobalContextProvider({ children }) {
           res.data.game.users.filter((user) => user.voted).length
         );
       }
+      console.log("refreshed game data");
       dispatch({
         type: "set",
         payload: {
@@ -254,6 +256,66 @@ export default function GlobalContextProvider({ children }) {
     setIsLoading(false);
   };
 
+  const updateGame = async (type, payload) => {
+    // update game
+    // type = setMin, setMax, setStep
+    // : send request based on type
+    try {
+      let res = null;
+      switch (type) {
+        case "setMin":
+          // set min value
+          res = await ester.post("/game/min", {
+            userId: state.user._id,
+            gameId: state.game._id,
+            min: payload,
+          });
+          break;
+        case "setMax":
+          // set max value
+          res = await ester.post("/game/max", {
+            userId: state.user._id,
+            gameId: state.game._id,
+            max: payload,
+          });
+          break;
+        case "setStep":
+          // set step value
+          res = await ester.post("/game/step", {
+            userId: state.user._id,
+            gameId: state.game._id,
+            step: payload,
+          });
+          break;
+        default:
+          break;
+      }
+      if (res) {
+        dispatch({
+          type: "set",
+          payload: {
+            game: res.data.game,
+            user: res.data.user,
+          },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const forceUpdate = async () => {
+    // send a post request to /game/force
+    try {
+      const res = await ester.post("/game/force", {
+        userId: state.user._id,
+        gameId: state.game._id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const amountUsersPresent = state.game?.users ? state.game?.users.length : 0;
 
   return (
@@ -287,6 +349,8 @@ export default function GlobalContextProvider({ children }) {
         },
         MEGAConfetti,
         setMEGAConfetti,
+        updateGame,
+        forceUpdate,
       }}
     >
       {children}
