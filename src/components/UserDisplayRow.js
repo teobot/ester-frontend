@@ -13,6 +13,17 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
   const { estimateBodyHeight, estimateBodyWidth } =
     React.useContext(EstimateContext);
 
+  const generateDisplayNumbers = () => {
+    let r = [];
+    for (
+      let i = state.game.minVote;
+      i <= state.game.maxVote;
+      i += state.game.step
+    )
+      r.push(i);
+    return r;
+  };
+
   return (
     <div
       style={{
@@ -66,11 +77,11 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
         disabled={!(voted || state.game.reveal)}
       />
       <Border />
-      {[0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((number, index) => (
+      {generateDisplayNumbers().map((number, index) => (
         <UserDisplaySection
           key={`estimate-user-row-number-${index}`}
           user={user}
-          value={number}
+          value={number.toFixed(1)}
           disabled={!(number === user.vote && state.game.reveal)}
         />
       ))}

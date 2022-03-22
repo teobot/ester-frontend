@@ -23,7 +23,7 @@ export default function UserVotingView() {
   const userVoted = async (v) => {
     await vote(v);
   };
-
+  
   if (!state.user || !vote) {
     // : redirect to landing page
     return <Navigate to="/" />;
@@ -119,9 +119,9 @@ export default function UserVotingView() {
               value={userVote}
               aria-label="Default"
               valueLabelDisplay="auto"
-              min={0}
-              max={5}
-              step={0.5}
+              min={state.game.minVote}
+              max={state.game.maxVote}
+              step={state.game.step}
               marks
               onChange={(e, v) => {
                 setUserVote(v);
@@ -152,7 +152,7 @@ const VoteDisplay = ({ vote, voted }) => {
         position: "relative",
       }}
     >
-      {vote.toString()}
+      {vote.toFixed(1)}
     </Paper>
   );
 };
