@@ -1,4 +1,4 @@
-import { useContext, useRef, createContext } from "react";
+import { useContext, useRef, createContext, useState } from "react";
 
 import { Navigate } from "react-router-dom";
 
@@ -13,8 +13,10 @@ import QRCode from "react-qr-code";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 
 import Button from "@mui/material/Button";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import "react-circular-progressbar/dist/styles.css";
+import EstimateScreenDrawer from "../components/EstimateScreenDrawer";
 
 export const EstimateContext = createContext();
 
@@ -32,6 +34,8 @@ export default function EstimateView() {
 
   const { width: estimateBodyWidth, height: estimateBodyHeight } =
     GetDimensions(estimateRef);
+
+  const [drawer, setDrawer] = useState(false);
 
   const revoteMessage = () => {
     if (state.game.reveal) {
@@ -115,94 +119,107 @@ export default function EstimateView() {
     return <Navigate to="/" />;
   } else {
     return (
-      <div id="estimate-container">
-        <div id="estimate-header">
-          <div id="estimate-header-left">
-            <div className="game-button-container">
-              <Button
-                fullWidth
-                variant="contained"
-                disabled={state.game.reveal || amountUsersPresent === 0}
-                onClick={reveal}
-                size="large"
-                color={
-                  amountUsersVoted === amountUsersPresent &&
-                  amountUsersPresent !== 0
-                    ? "success"
-                    : "secondary"
-                }
-              >
-                {revealMessage()}
-              </Button>
-              <Button
-                fullWidth
-                variant="contained"
-                disabled={!state.game.reveal}
-                onClick={revote}
-                size="large"
-                color="secondary"
-              >
-                {revoteMessage()}
-              </Button>
-            </div>
-          </div>
-          <div id="estimate-header-center">
-            <div style={{ width: 175, height: 175 }}>
-              <CircularProgressbarWithChildren
-                styles={{
-                  path: {
-                    stroke:
-                      amountUsersVoted === amountUsersPresent &&
-                      amountUsersPresent !== 0
-                        ? "#66bb6a"
-                        : "#3e98c7",
-                  },
-                }}
-                value={(amountUsersVoted / amountUsersPresent) * 100}
-              >
-                <div
-                  style={{ fontSize: "90%", marginTop: -5 }}
-                  className="roboto"
+      <>
+        <SettingsIcon
+          style={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            zIndex: 5,
+            cursor: "pointer",
+          }}
+          onClick={() => setDrawer(true)}
+        />
+        <EstimateScreenDrawer open={drawer} setDrawer={setDrawer} />
+        <div id="estimate-container">
+          <div id="estimate-header">
+            <div id="estimate-header-left">
+              <div className="game-button-container">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  disabled={state.game.reveal || amountUsersPresent === 0}
+                  onClick={reveal}
+                  size="large"
+                  color={
+                    amountUsersVoted === amountUsersPresent &&
+                    amountUsersPresent !== 0
+                      ? "success"
+                      : "secondary"
+                  }
                 >
-                  {progressChartMessage()}
-                </div>
-              </CircularProgressbarWithChildren>
+                  {revealMessage()}
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  disabled={!state.game.reveal}
+                  onClick={revote}
+                  size="large"
+                  color="secondary"
+                >
+                  {revoteMessage()}
+                </Button>
+              </div>
+            </div>
+            <div id="estimate-header-center">
+              <div style={{ width: 175, height: 175 }}>
+                <CircularProgressbarWithChildren
+                  styles={{
+                    path: {
+                      stroke:
+                        amountUsersVoted === amountUsersPresent &&
+                        amountUsersPresent !== 0
+                          ? "#66bb6a"
+                          : "#3e98c7",
+                    },
+                  }}
+                  value={(amountUsersVoted / amountUsersPresent) * 100}
+                >
+                  <div
+                    style={{ fontSize: "90%", marginTop: -5 }}
+                    className="roboto"
+                  >
+                    {progressChartMessage()}
+                  </div>
+                </CircularProgressbarWithChildren>
+              </div>
+            </div>
+            <div id="estimate-header-right">
+              <QRCode
+                value={window.location.origin + `/join/${state.game.joinCode}`}
+                size={150}
+              />
+              <div className="qr-code-subtext">{state.game.joinCode}</div>
             </div>
           </div>
-          <div id="estimate-header-right">
-            <QRCode
-              value={window.location.origin + `/join/${state.game.joinCode}`}
-              size={150}
-            />
-            <div className="qr-code-subtext">{state.game.joinCode}</div>
-          </div>
-        </div>
-        <EstimateContext.Provider
-          value={{ estimateBodyWidth, estimateBodyHeight }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
-            }}
-            ref={estimateRef}
-            id="estimate-body"
+          <EstimateContext.Provider
+            value={{ estimateBodyWidth, estimateBodyHeight }}
           >
-            {/* Make a array of 5 items */}
-            {state?.game.users.sort(sortByVote).map((user, index) => (
-              <UserDisplayRow
-                isLowest={index === 0}
-                isHighest={index === state.game.users.length - 1}
-                voted={user.voted}
-                key={`estimate-user-row-${index}`}
-                user={user}
-              />
-            ))}
-          </div>
-        </EstimateContext.Provider>
-      </div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+              ref={estimateRef}
+              id="estimate-body"
+            >
+              {/* Make a array of 5 items */}
+              {state?.game.users.sort(sortByVote).map((user, index) => (
+                <UserDisplayRow
+                  isLowest={index === 0}
+                  isHighest={index === state.game.users.length - 1}
+                  voted={user.voted}
+                  key={`estimate-user-row-${index}`}
+                  user={user}
+                />
+              ))}
+            </div>
+          </EstimateContext.Provider>
+        </div>
+      </>
     );
   }
 }
