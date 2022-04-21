@@ -1,3 +1,5 @@
+import ScaleText from "react-scale-text";
+
 const hexToRgb = (hex) => {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
@@ -15,24 +17,22 @@ const UserDisplaySection = ({
   disabled,
   value,
   user,
+  tileOptions,
 }) => {
   const disableColour = hexToRgb(disabledColor || null) || "225, 235, 226";
   // trim the value to be always 4 characters long
-  const valueTrimmed =
-    value.length > 4 ? value.toString().substring(0, 4) : value;
   return (
     <div
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className="roboto"
       style={{
-        height: 70,
-        width: 70,
-        backgroundColor: "red",
+        position: "relative",
+        height: tileOptions.height,
+        width: tileOptions.width,
         background: disabled ? `rgba(${disableColour}, 0.25)` : user.color,
         boxShadow: disabled ? "" : "0px 4px 4px rgba(0, 0, 0, 0.35)",
         borderRadius: 10,
-        fontSize: 26,
         fontWeight: 900,
         display: "flex",
         justifyContent: "center",
@@ -40,7 +40,12 @@ const UserDisplaySection = ({
         color: disabled ? "rgba(0, 0, 0, 0.35)" : "#000000",
       }}
     >
-      {valueTrimmed}
+      <div
+        className="parent"
+        style={{ width: "calc(100% - 15px)", height: "calc(100% - 15px)" }}
+      >
+        <ScaleText>{value}</ScaleText>
+      </div>
     </div>
   );
 };

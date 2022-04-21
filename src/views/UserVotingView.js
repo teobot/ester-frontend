@@ -12,6 +12,8 @@ import Paper from "@mui/material/Paper";
 import ConfettiCannon from "../components/ConfettiCannon";
 import VotingScreenDrawer from "../components/VotingScreenDrawer";
 
+import ScaleText from "react-scale-text";
+
 export default function UserVotingView() {
   const { state, vote } = useContext(GlobalContext);
 
@@ -23,7 +25,7 @@ export default function UserVotingView() {
   const userVoted = async (v) => {
     await vote(v);
   };
-  
+
   if (!state.user || !vote) {
     // : redirect to landing page
     return <Navigate to="/" />;
@@ -64,9 +66,15 @@ export default function UserVotingView() {
               }}
               variant="rounded"
             >
-              {state.user.name.length > 4
-                ? state.user.name.toString().substring(0, 4)
-                : state.user.name}
+              <div
+                className="parent"
+                style={{
+                  width: "calc(100% - 15px)",
+                  height: "calc(100% - 15px)",
+                }}
+              >
+                <ScaleText>{state.user.name}</ScaleText>
+              </div>
             </Avatar>
           </div>
           <div

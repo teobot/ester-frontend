@@ -13,6 +13,7 @@ import QRCode from "react-qr-code";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 import "react-circular-progressbar/dist/styles.css";
@@ -36,6 +37,8 @@ export default function EstimateView() {
     GetDimensions(estimateRef);
 
   const [drawer, setDrawer] = useState(false);
+
+  console.log(state);
 
   const revoteMessage = () => {
     if (state.game.reveal) {
@@ -135,31 +138,37 @@ export default function EstimateView() {
           <div id="estimate-header">
             <div id="estimate-header-left">
               <div className="game-button-container">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disabled={state.game.reveal || amountUsersPresent === 0}
-                  onClick={reveal}
-                  size="large"
-                  color={
-                    amountUsersVoted === amountUsersPresent &&
-                    amountUsersPresent !== 0
-                      ? "success"
-                      : "secondary"
-                  }
-                >
-                  {revealMessage()}
-                </Button>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disabled={!state.game.reveal}
-                  onClick={revote}
-                  size="large"
-                  color="secondary"
-                >
-                  {revoteMessage()}
-                </Button>
+                <Grid container spacing={2} className="h-100">
+                  <Grid item xs={6} className="h-100">
+                    <Button
+                      className="h-100"
+                      fullWidth
+                      variant="contained"
+                      disabled={state.game.reveal || amountUsersPresent === 0}
+                      onClick={reveal}
+                      color={
+                        amountUsersVoted === amountUsersPresent &&
+                        amountUsersPresent !== 0
+                          ? "success"
+                          : "secondary"
+                      }
+                    >
+                      {revealMessage()}
+                    </Button>
+                  </Grid>
+                  <Grid className="h-100" item xs={6}>
+                    <Button
+                      fullWidth
+                      className="h-100"
+                      variant="contained"
+                      disabled={!state.game.reveal}
+                      onClick={revote}
+                      color="secondary"
+                    >
+                      {revoteMessage()}
+                    </Button>
+                  </Grid>
+                </Grid>
               </div>
             </div>
             <div id="estimate-header-center">
@@ -200,7 +209,8 @@ export default function EstimateView() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "flex-start",
+                justifyContent:
+                  state?.game.users.length > 5 ? "space-between" : "flex-start",
                 alignItems: "center",
               }}
               ref={estimateRef}

@@ -24,20 +24,30 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
     return r;
   };
 
+  const tileRowOptions = {
+    height: estimateBodyHeight / state.game.users.length,
+    width: estimateBodyWidth,
+  };
+
+  const tileOptions = {
+    height: estimateBodyHeight / state.game.users.length > 70 ? 70 : estimateBodyHeight / state.game.users.length,
+    width: estimateBodyHeight / state.game.users.length > 70 ? 70 : estimateBodyHeight / state.game.users.length,
+  };
+
   return (
     <div
       style={{
+        position: "relative",
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        height: estimateBodyHeight / 6,
-        width: estimateBodyWidth,
-        padding: "15px 25px",
+        // height: tileRowOptions.height,
+        width: tileRowOptions.width,
+        padding: "10px 25px",
         boxSizing: "border-box",
         background: "#F8F8F8",
         borderRadius: 20,
-        position: "relative",
       }}
       className="estimate-user-row"
     >
@@ -47,8 +57,8 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
           onMouseLeave={() => setHover(false)}
           style={{
             position: "absolute",
-            height: 70,
-            width: 70,
+            height: tileOptions.height,
+            width: tileOptions.width,
             zIndex: 1,
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             borderRadius: 10,
@@ -75,6 +85,7 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
         user={user}
         value={user.name}
         disabled={!(voted || state.game.reveal)}
+        tileOptions={tileOptions}
       />
       <Border />
       {generateDisplayNumbers().map((number, index) => (
@@ -83,6 +94,7 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
           user={user}
           value={number.toFixed(1)}
           disabled={!(number === user.vote && state.game.reveal)}
+          tileOptions={tileOptions}
         />
       ))}
     </div>
