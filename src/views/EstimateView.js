@@ -19,6 +19,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import "react-circular-progressbar/dist/styles.css";
 import EstimateScreenDrawer from "../components/EstimateScreenDrawer";
 
+import ScaleText from "react-scale-text";
+
 export const EstimateContext = createContext();
 
 export default function EstimateView() {
@@ -32,13 +34,14 @@ export default function EstimateView() {
   } = useContext(GlobalContext);
 
   const estimateRef = useRef();
+  const headerRef = useRef();
 
   const { width: estimateBodyWidth, height: estimateBodyHeight } =
     GetDimensions(estimateRef);
 
-  const [drawer, setDrawer] = useState(false);
+  const { width: headerWidth, height: headerHeight } = GetDimensions(headerRef);
 
-  console.log(state);
+  const [drawer, setDrawer] = useState(false);
 
   const revoteMessage = () => {
     if (state.game.reveal) {
@@ -78,16 +81,8 @@ export default function EstimateView() {
     if (state.game.reveal) {
       // display the average vote
       return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <>
           Average vote:
-          <br />
           <b
             style={{
               fontSize: "2em",
@@ -96,7 +91,7 @@ export default function EstimateView() {
             {/* round to 2 decimal places */}
             {voteAverage.toFixed(2)}
           </b>
-        </div>
+        </>
       );
     }
 
@@ -135,7 +130,7 @@ export default function EstimateView() {
         />
         <EstimateScreenDrawer open={drawer} setDrawer={setDrawer} />
         <div id="estimate-container">
-          <div id="estimate-header">
+          <div id="estimate-header" ref={headerRef}>
             <div id="estimate-header-left">
               <div className="game-button-container">
                 <Grid container spacing={2} className="h-100">
@@ -171,8 +166,13 @@ export default function EstimateView() {
                 </Grid>
               </div>
             </div>
-            <div id="estimate-header-center">
-              <div style={{ width: 175, height: 175 }}>
+            <div id="estimate-header-center" style={{ position: "relative" }}>
+              <div
+                style={{
+                  height: headerHeight / 1.1,
+                  width: headerHeight / 1.1,
+                }}
+              >
                 <CircularProgressbarWithChildren
                   styles={{
                     path: {
@@ -186,10 +186,13 @@ export default function EstimateView() {
                   value={(amountUsersVoted / amountUsersPresent) * 100}
                 >
                   <div
-                    style={{ fontSize: "90%", marginTop: -5 }}
+                    id="chart-wrapper"
+                    style={{ marginTop: -5 }}
                     className="roboto"
                   >
-                    {progressChartMessage()}
+                    <ScaleText minFontSize={16}>
+                      {progressChartMessage()}
+                    </ScaleText>
                   </div>
                 </CircularProgressbarWithChildren>
               </div>
@@ -197,7 +200,7 @@ export default function EstimateView() {
             <div id="estimate-header-right">
               <QRCode
                 value={window.location.origin + `/join/${state.game.joinCode}`}
-                size={150}
+                size={headerHeight * 0.7}
               />
               <div className="qr-code-subtext">{state.game.joinCode}</div>
             </div>
