@@ -1,4 +1,4 @@
-import { useRef, useContext, useState } from "react";
+import { useContext, useState } from "react";
 
 import { Navigate } from "react-router-dom";
 
@@ -15,7 +15,7 @@ import VotingScreenDrawer from "../components/VotingScreenDrawer";
 import ScaleText from "react-scale-text";
 
 export default function UserVotingView() {
-  const { state, vote, windowWidth, windowHeight } = useContext(GlobalContext);
+  const { state, vote } = useContext(GlobalContext);
 
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
   const [drawer, setDrawer] = useState(false);

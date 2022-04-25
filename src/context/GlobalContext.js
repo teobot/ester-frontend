@@ -167,6 +167,26 @@ export default function GlobalContextProvider({ children }) {
     navigate("/join");
   };
 
+  const undoVote = async () => {
+    try {
+      // send a post request for the vote to undo a vote
+      const res = await ester.post("/user/vote/undo", {
+        userId: state.user._id,
+        gameId: state.game._id,
+      });
+      dispatch({
+        type: "set",
+        payload: {
+          game: res.data.game,
+          user: res.data.user,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      navigate("/");
+    }
+  };
+
   const vote = async (voteValue) => {
     try {
       const res = await ester.post("/game/vote", {
@@ -326,6 +346,7 @@ export default function GlobalContextProvider({ children }) {
         joinGame,
         refreshGameData,
         goToJoinCodeView,
+        undoVote,
         vote,
         reveal,
         revote,
