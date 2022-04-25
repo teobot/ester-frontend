@@ -70,7 +70,7 @@ export default function EstimateView() {
     }
   };
 
-  const progressChartMessage = () => {
+  const calculateChartData = () => {
     let userCount = 0;
     const voteAccumulator = state.game.users.reduce((acc, user) => {
       userCount++;
@@ -78,19 +78,39 @@ export default function EstimateView() {
     }, 0);
     const voteAverage = voteAccumulator / userCount;
 
+    console.log(state);
+
+    // find the closest step to the average
+    const step = Math.round(voteAverage / state.game.step) * state.game.step;
+
+    return {
+      userCount,
+      voteAccumulator,
+      voteAverage,
+      step,
+      differenceToStep: step - voteAverage,
+    };
+  };
+
+  const progressChartMessage = () => {
     if (state.game.reveal) {
+      const { voteAverage, step, differenceToStep } = calculateChartData();
+
       // display the average vote
       return (
         <>
           Average vote:
           <b
             style={{
-              fontSize: "2em",
+              fontSize: "1.5em",
             }}
           >
             {/* round to 2 decimal places */}
             {voteAverage.toFixed(2)}
           </b>
+          <br />
+          <small>(+{differenceToStep.toFixed(2)})</small>
+          <b>{step.toFixed(2)}</b>
         </>
       );
     }
