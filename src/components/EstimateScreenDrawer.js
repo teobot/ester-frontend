@@ -59,7 +59,10 @@ export default function EstimateScreenDrawer({ open, setDrawer }) {
             label="Step"
             variant="outlined"
             type="number"
-            onChange={(e) => setStepState(e.target.value)}
+            min={2}
+            onChange={(e) =>
+              setStepState(e.target.value > 0 ? e.target.value : 0)
+            }
           />
         </ListItem>
         <ListItem>
@@ -73,7 +76,9 @@ export default function EstimateScreenDrawer({ open, setDrawer }) {
             label="Minimum"
             variant="outlined"
             type="number"
-            onChange={(e) => setMinState(e.target.value)}
+            onChange={(e) =>
+              setMinState(e.target.value > 0 ? e.target.value : 0)
+            }
           />
         </ListItem>
         <ListItem>
@@ -87,7 +92,9 @@ export default function EstimateScreenDrawer({ open, setDrawer }) {
             label="Maximum"
             variant="outlined"
             type="number"
-            onChange={(e) => setMaxState(e.target.value)}
+            onChange={(e) =>
+              setMaxState(e.target.value > 0 ? e.target.value : 0)
+            }
           />
         </ListItem>
         <ListItem style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -96,7 +103,7 @@ export default function EstimateScreenDrawer({ open, setDrawer }) {
           </Button>
         </ListItem>
         <br />
-        <Divider light={true}/>
+        <Divider light={true} />
         <br />
         <ListItem>
           <ListItemIcon>
