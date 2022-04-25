@@ -78,8 +78,6 @@ export default function EstimateView() {
     }, 0);
     const voteAverage = voteAccumulator / userCount;
 
-    console.log(state);
-
     // find the closest step to the average
     const step = Math.round(voteAverage / state.game.step) * state.game.step;
 
