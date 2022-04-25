@@ -15,7 +15,7 @@ import VotingScreenDrawer from "../components/VotingScreenDrawer";
 import ScaleText from "react-scale-text";
 
 export default function UserVotingView() {
-  const { state, vote } = useContext(GlobalContext);
+  const { state, vote, windowWidth, windowHeight } = useContext(GlobalContext);
 
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
   const [drawer, setDrawer] = useState(false);
@@ -23,6 +23,16 @@ export default function UserVotingView() {
   const userVoted = async (v) => {
     await vote(v);
   };
+
+  const screenSize = () => {
+    if(windowWidth > 600 && windowWidth > windowHeight) {
+      // desktop
+      return windowHeight
+    } else {
+      // mobile
+      return "100%"
+    }
+  }
 
   if (!state.user || !vote) {
     // : redirect to landing page
@@ -33,105 +43,116 @@ export default function UserVotingView() {
         <VotingScreenDrawer open={drawer} setDrawer={setDrawer} />
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
             width: "100%",
             height: "100%",
             backgroundColor: state.user.color,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <div
             style={{
               display: "flex",
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "flex-end",
-              padding: 5,
-            }}
-          >
-            <Avatar
-              onClick={() => setDrawer(true)}
-              className="roboto"
-              style={{
-                backgroundColor: state.user.color,
-                width: 75,
-                height: 75,
-                border: "1px solid rgba(0, 0, 0, 0.15)",
-                boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.25)",
-                fontWeight: "bold",
-                color: "black",
-              }}
-              variant="rounded"
-            >
-              <div
-                className="parent"
-                style={{
-                  width: "calc(100% - 15px)",
-                  height: "calc(100% - 15px)",
-                }}
-              >
-                <ScaleText>{state.user.name}</ScaleText>
-              </div>
-            </Avatar>
-          </div>
-          <div
-            style={{
-              position: "relative",
-              display: "flex",
-              flex: 5,
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "0px 25px",
-            }}
-          >
-            <VoteDisplay voted={state.user.voted} vote={userVote} />
-            <ConfettiCannon state={state} />
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flex: 5,
-              alignItems: "center",
-              justifyContent: "space-around",
               flexDirection: "column",
-              padding: "0px 25px",
+              width: screenSize(),
+              height: "100%",
             }}
           >
-            <Button
-              variant="contained"
-              onClick={() => {
-                userVoted(userVote);
-              }}
-              disabled={state.user.voted || state.game.reveal}
-              color={state.user.voted ? "secondary" : "success"}
-              size="large"
+            <div
               style={{
-                width: "100%",
-                height: "20%",
-                fontSize: "2rem",
+                display: "flex",
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "flex-end",
+                padding: 5,
+              }}
+            >
+              <Avatar
+                onClick={() => setDrawer(true)}
+                className="roboto"
+                style={{
+                  backgroundColor: state.user.color,
+                  width: 75,
+                  height: 75,
+                  border: "1px solid rgba(0, 0, 0, 0.15)",
+                  boxShadow: "2px 2px 3px rgba(0, 0, 0, 0.25)",
+                  fontWeight: "bold",
+                  color: "black",
+                }}
+                variant="rounded"
+              >
+                <div
+                  className="parent"
+                  style={{
+                    width: "calc(100% - 15px)",
+                    height: "calc(100% - 15px)",
+                  }}
+                >
+                  <ScaleText>{state.user.name}</ScaleText>
+                </div>
+              </Avatar>
+            </div>
+            <div
+              style={{
                 position: "relative",
                 display: "flex",
+                flex: 5,
                 alignItems: "center",
                 justifyContent: "center",
+                padding: "0px 25px",
               }}
             >
-              {state.user.voted ? "vote locked" : "vote"}
-            </Button>
-            <Slider
-              disabled={state.user.voted}
-              key={`slider-${state.user._id}`}
-              size="medium"
-              value={userVote}
-              aria-label="Default"
-              valueLabelDisplay="auto"
-              min={state.game.minVote}
-              max={state.game.maxVote}
-              step={state.game.step}
-              marks
-              onChange={(e, v) => {
-                setUserVote(v);
+              <VoteDisplay voted={state.user.voted} vote={userVote} />
+              <ConfettiCannon state={state} />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flex: 5,
+                alignItems: "center",
+                justifyContent: "space-around",
+                flexDirection: "column",
+                padding: "0px 25px",
               }}
-            />
+            >
+              <Button
+                variant="contained"
+                onClick={() => {
+                  userVoted(userVote);
+                }}
+                disabled={state.user.voted || state.game.reveal}
+                color={state.user.voted ? "secondary" : "success"}
+                size="large"
+                style={{
+                  width: "100%",
+                  height: "20%",
+                  fontSize: "2rem",
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {state.user.voted ? "vote locked" : "vote"}
+              </Button>
+              <Slider
+                disabled={state.user.voted}
+                key={`slider-${state.user._id}`}
+                size="medium"
+                value={userVote}
+                aria-label="Default"
+                valueLabelDisplay="auto"
+                min={state.game.minVote}
+                max={state.game.maxVote}
+                step={state.game.step}
+                marks
+                onChange={(e, v) => {
+                  setUserVote(v);
+                }}
+              />
+            </div>
           </div>
         </div>
       </>
