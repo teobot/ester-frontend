@@ -15,12 +15,10 @@ import VotingScreenDrawer from "../components/VotingScreenDrawer";
 import ScaleText from "react-scale-text";
 
 export default function UserVotingView() {
-  const { state, vote } = useContext(GlobalContext);
+  const { state, vote, windowWidth, windowHeight } = useContext(GlobalContext);
 
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
   const [drawer, setDrawer] = useState(false);
-
-  const screenRef = useRef(null);
 
   const userVoted = async (v) => {
     await vote(v);
@@ -34,7 +32,6 @@ export default function UserVotingView() {
       <>
         <VotingScreenDrawer open={drawer} setDrawer={setDrawer} />
         <div
-          ref={screenRef}
           style={{
             display: "flex",
             flexDirection: "column",
