@@ -28,7 +28,7 @@ export default function ConfettiCannon({ state }) {
     ? {
         force: 1.4,
         duration: 4000,
-        particleCount: 200,
+        particleCount: 400,
         floorHeight: 2000,
         floorWidth: 2000,
       }
