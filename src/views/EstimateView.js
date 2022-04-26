@@ -13,10 +13,13 @@ import QRCode from "react-qr-code";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 
 import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
 import SettingsIcon from "@mui/icons-material/Settings";
 
 import "react-circular-progressbar/dist/styles.css";
 import EstimateScreenDrawer from "../components/EstimateScreenDrawer";
+
+import ScaleText from "react-scale-text";
 
 export const EstimateContext = createContext();
 
@@ -31,9 +34,12 @@ export default function EstimateView() {
   } = useContext(GlobalContext);
 
   const estimateRef = useRef();
+  const headerRef = useRef();
 
   const { width: estimateBodyWidth, height: estimateBodyHeight } =
     GetDimensions(estimateRef);
+
+  const { width: headerWidth, height: headerHeight } = GetDimensions(headerRef);
 
   const [drawer, setDrawer] = useState(false);
 
@@ -64,7 +70,7 @@ export default function EstimateView() {
     }
   };
 
-  const progressChartMessage = () => {
+  const calculateChartData = () => {
     let userCount = 0;
     const voteAccumulator = state.game.users.reduce((acc, user) => {
       userCount++;
@@ -72,28 +78,38 @@ export default function EstimateView() {
     }, 0);
     const voteAverage = voteAccumulator / userCount;
 
+    // find the closest step to the average
+    const step = Math.round(voteAverage / state.game.step) * state.game.step;
+
+    return {
+      userCount,
+      voteAccumulator,
+      voteAverage,
+      step,
+      differenceToStep: step - voteAverage,
+    };
+  };
+
+  const progressChartMessage = () => {
     if (state.game.reveal) {
+      const { voteAverage, step, differenceToStep } = calculateChartData();
+
       // display the average vote
       return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <>
           Average vote:
-          <br />
           <b
             style={{
-              fontSize: "2em",
+              fontSize: "1.5em",
             }}
           >
             {/* round to 2 decimal places */}
             {voteAverage.toFixed(2)}
           </b>
-        </div>
+          <br />
+          <small>(+{differenceToStep.toFixed(2)})</small>
+          <b>{step.toFixed(2)}</b>
+        </>
       );
     }
 
@@ -132,38 +148,49 @@ export default function EstimateView() {
         />
         <EstimateScreenDrawer open={drawer} setDrawer={setDrawer} />
         <div id="estimate-container">
-          <div id="estimate-header">
+          <div id="estimate-header" ref={headerRef}>
             <div id="estimate-header-left">
               <div className="game-button-container">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disabled={state.game.reveal || amountUsersPresent === 0}
-                  onClick={reveal}
-                  size="large"
-                  color={
-                    amountUsersVoted === amountUsersPresent &&
-                    amountUsersPresent !== 0
-                      ? "success"
-                      : "secondary"
-                  }
-                >
-                  {revealMessage()}
-                </Button>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  disabled={!state.game.reveal}
-                  onClick={revote}
-                  size="large"
-                  color="secondary"
-                >
-                  {revoteMessage()}
-                </Button>
+                <Grid container spacing={2} className="h-100">
+                  <Grid item xs={6} className="h-100">
+                    <Button
+                      className="h-100"
+                      fullWidth
+                      variant="contained"
+                      disabled={state.game.reveal || amountUsersPresent === 0}
+                      onClick={reveal}
+                      color={
+                        amountUsersVoted === amountUsersPresent &&
+                        amountUsersPresent !== 0
+                          ? "success"
+                          : "secondary"
+                      }
+                    >
+                      {revealMessage()}
+                    </Button>
+                  </Grid>
+                  <Grid className="h-100" item xs={6}>
+                    <Button
+                      fullWidth
+                      className="h-100"
+                      variant="contained"
+                      disabled={!state.game.reveal}
+                      onClick={revote}
+                      color="secondary"
+                    >
+                      {revoteMessage()}
+                    </Button>
+                  </Grid>
+                </Grid>
               </div>
             </div>
-            <div id="estimate-header-center">
-              <div style={{ width: 175, height: 175 }}>
+            <div id="estimate-header-center" style={{ position: "relative" }}>
+              <div
+                style={{
+                  height: headerHeight / 1.1,
+                  width: headerHeight / 1.1,
+                }}
+              >
                 <CircularProgressbarWithChildren
                   styles={{
                     path: {
@@ -177,10 +204,13 @@ export default function EstimateView() {
                   value={(amountUsersVoted / amountUsersPresent) * 100}
                 >
                   <div
-                    style={{ fontSize: "90%", marginTop: -5 }}
+                    id="chart-wrapper"
+                    style={{ marginTop: -5 }}
                     className="roboto"
                   >
-                    {progressChartMessage()}
+                    <ScaleText minFontSize={16}>
+                      {progressChartMessage()}
+                    </ScaleText>
                   </div>
                 </CircularProgressbarWithChildren>
               </div>
@@ -188,7 +218,7 @@ export default function EstimateView() {
             <div id="estimate-header-right">
               <QRCode
                 value={window.location.origin + `/join/${state.game.joinCode}`}
-                size={150}
+                size={headerHeight * 0.7}
               />
               <div className="qr-code-subtext">{state.game.joinCode}</div>
             </div>
@@ -200,7 +230,8 @@ export default function EstimateView() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "flex-start",
+                justifyContent:
+                  state?.game.users.length > 5 ? "space-between" : "flex-start",
                 alignItems: "center",
               }}
               ref={estimateRef}

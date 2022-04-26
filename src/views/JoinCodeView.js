@@ -34,10 +34,11 @@ export default function JoinCodeView() {
       return;
     }
 
-    const res = await joinGame(joinCode, username);
-
-    if (res) {
-      setError(error);
+    if (!isLoading) {
+      const res = await joinGame(joinCode, username);
+      if (res) {
+        setError(error);
+      }
     }
   };
 
