@@ -15,7 +15,7 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
 
   const generateDisplayNumbers = () => {
     console.log("generateDisplayNumbers");
-    let r = [...state.game.additionMarker.map((marker) => marker.value)];
+    let r = [...state.game.additionMarker.map((marker) => marker.value) || []];
     for (
       let i = state.game.minVote;
       i <= state.game.maxVote;
