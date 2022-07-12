@@ -14,13 +14,18 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
     React.useContext(EstimateContext);
 
   const generateDisplayNumbers = () => {
-    let r = [];
+    let r = [
+      ...(state.game
+        ? state.game.additionMarker.map((marker) => marker.value)
+        : []),
+    ];
     for (
       let i = state.game.minVote;
       i <= state.game.maxVote;
       i += state.game.step
-    )
+    ) {
       r.push(i);
+    }
     return r;
   };
 
@@ -30,8 +35,14 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
   };
 
   const tileOptions = {
-    height: estimateBodyHeight / state.game.users.length > 70 ? 70 : estimateBodyHeight / state.game.users.length,
-    width: estimateBodyHeight / state.game.users.length > 70 ? 70 : estimateBodyHeight / state.game.users.length,
+    height:
+      estimateBodyHeight / state.game.users.length > 70
+        ? 70
+        : estimateBodyHeight / state.game.users.length,
+    width:
+      estimateBodyHeight / state.game.users.length > 70
+        ? 70
+        : estimateBodyHeight / state.game.users.length,
   };
 
   return (
@@ -92,7 +103,7 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
         <UserDisplaySection
           key={`estimate-user-row-number-${index}`}
           user={user}
-          value={number.toFixed(1)}
+          value={number.toFixed(2)}
           disabled={!(number === user.vote && state.game.reveal)}
           tileOptions={tileOptions}
         />

@@ -1,5 +1,5 @@
 # Welcome to ester-frontend 👋
-![Version](https://img.shields.io/badge/version-0.5.0-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://github.com/teobot/ester-frontend#readme)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/1cc1a6ed-0803-4504-94d3-536986482f33/deploy-status)](https://app.netlify.com/sites/estr/deploys)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/teobot/ester-backend/graphs/commit-activity)
