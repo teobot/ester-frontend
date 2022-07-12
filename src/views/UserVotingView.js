@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { Navigate } from "react-router-dom";
 
@@ -16,6 +16,7 @@ import ScaleText from "react-scale-text";
 
 export default function UserVotingView() {
   const { state, vote, windowWidth, windowHeight } = useContext(GlobalContext);
+  const [gameMarkers, setGameMarkers] = useState([]);
 
   const [userVote, setUserVote] = useState(state.user?.vote || 0);
   const [drawer, setDrawer] = useState(false);
@@ -24,15 +25,45 @@ export default function UserVotingView() {
     await vote(v);
   };
 
+  const returnMarkers = () => {
+    if (!state.game) return [];
+    let _markers = [...state.game.additionMarker];
+    for (
+      let i = state.game.minVote;
+      i < state.game.maxVote + state.game.step;
+      i += state.game.step
+    ) {
+      _markers.push({
+        value: i,
+        label: `${i}`,
+      });
+    }
+
+    // sort the markers by value
+    _markers.sort((a, b) => {
+      return a.value - b.value;
+    });
+
+    setGameMarkers(_markers);
+  };
+
+  useEffect(() => {
+    returnMarkers();
+  }, []);
+
+  useEffect(() => {
+    returnMarkers();
+  }, [state.game]);
+
   const screenSize = () => {
-    if(windowWidth > 600 && windowWidth > windowHeight) {
+    if (windowWidth > 600 && windowWidth > windowHeight) {
       // desktop
-      return windowHeight
+      return windowHeight;
     } else {
       // mobile
-      return "100%"
+      return "100%";
     }
-  }
+  };
 
   if (!state.user || !vote) {
     // : redirect to landing page
@@ -144,10 +175,14 @@ export default function UserVotingView() {
                 value={userVote}
                 aria-label="Default"
                 valueLabelDisplay="auto"
-                min={state.game.minVote}
-                max={state.game.maxVote}
-                step={state.game.step}
-                marks
+                min={gameMarkers.length > 0 ? gameMarkers[0].value : 0}
+                max={
+                  gameMarkers.length > 0
+                    ? gameMarkers[gameMarkers.length - 1].value
+                    : 0
+                }
+                step={null}
+                marks={gameMarkers}
                 onChange={(e, v) => {
                   setUserVote(v);
                 }}
@@ -178,7 +213,7 @@ const VoteDisplay = ({ vote, voted }) => {
         position: "relative",
       }}
     >
-      {vote.toFixed(1)}
+      {vote.toFixed(2)}
     </Paper>
   );
 };

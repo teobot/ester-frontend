@@ -14,13 +14,18 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
     React.useContext(EstimateContext);
 
   const generateDisplayNumbers = () => {
-    let r = [];
+    console.log("generateDisplayNumbers");
+    let r = [...state.game.additionMarker.map((marker) => marker.value)];
     for (
       let i = state.game.minVote;
       i <= state.game.maxVote;
       i += state.game.step
-    )
+    ) {
+      console.log({ r });
       r.push(i);
+    }
+
+    console.log({ r });
     return r;
   };
 
@@ -30,8 +35,14 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
   };
 
   const tileOptions = {
-    height: estimateBodyHeight / state.game.users.length > 70 ? 70 : estimateBodyHeight / state.game.users.length,
-    width: estimateBodyHeight / state.game.users.length > 70 ? 70 : estimateBodyHeight / state.game.users.length,
+    height:
+      estimateBodyHeight / state.game.users.length > 70
+        ? 70
+        : estimateBodyHeight / state.game.users.length,
+    width:
+      estimateBodyHeight / state.game.users.length > 70
+        ? 70
+        : estimateBodyHeight / state.game.users.length,
   };
 
   return (
@@ -88,15 +99,18 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
         tileOptions={tileOptions}
       />
       <Border />
-      {generateDisplayNumbers().map((number, index) => (
-        <UserDisplaySection
-          key={`estimate-user-row-number-${index}`}
-          user={user}
-          value={number.toFixed(1)}
-          disabled={!(number === user.vote && state.game.reveal)}
-          tileOptions={tileOptions}
-        />
-      ))}
+      {generateDisplayNumbers().map((number, index) => {
+        console.log({ number });
+        return (
+          <UserDisplaySection
+            key={`estimate-user-row-number-${index}`}
+            user={user}
+            value={number.toFixed(2)}
+            disabled={!(number === user.vote && state.game.reveal)}
+            tileOptions={tileOptions}
+          />
+        );
+      })}
     </div>
   );
 };

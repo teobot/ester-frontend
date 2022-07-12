@@ -42,7 +42,12 @@ const UserDisplaySection = ({
     >
       <div
         className="parent"
-        style={{ width: "calc(100% - 15px)", height: "calc(100% - 15px)" }}
+        style={{
+          display: "flex",
+          flex: 1,
+          width: "100%",
+          boxSizing: "border-box",
+        }}
       >
         <ScaleText>{value}</ScaleText>
       </div>
