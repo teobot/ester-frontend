@@ -40,15 +40,7 @@ const UserDisplaySection = ({
         color: disabled ? "rgba(0, 0, 0, 0.35)" : "#000000",
       }}
     >
-      <div
-        className="parent"
-        style={{
-          display: "flex",
-          flex: 1,
-          width: "100%",
-          boxSizing: "border-box",
-        }}
-      >
+      <div className="parent" style={{ width: "90%", height: "90%", textAlign: "center" }}>
         <ScaleText>{value}</ScaleText>
       </div>
     </div>

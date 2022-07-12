@@ -35,7 +35,6 @@ export default function UserVotingView() {
     ) {
       _markers.push({
         value: i,
-        label: `${i}`,
       });
     }
 
@@ -171,10 +170,9 @@ export default function UserVotingView() {
               <Slider
                 disabled={state.user.voted}
                 key={`slider-${state.user._id}`}
-                size="medium"
                 value={userVote}
-                aria-label="Default"
-                valueLabelDisplay="auto"
+                // aria-label="Default"
+                // valueLabelDisplay="auto"
                 min={gameMarkers.length > 0 ? gameMarkers[0].value : 0}
                 max={
                   gameMarkers.length > 0

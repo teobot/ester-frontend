@@ -14,18 +14,18 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
     React.useContext(EstimateContext);
 
   const generateDisplayNumbers = () => {
-    console.log("generateDisplayNumbers");
-    let r = [...state.game.additionMarker.map((marker) => marker.value) || []];
+    let r = [
+      ...(state.game
+        ? state.game.additionMarker.map((marker) => marker.value)
+        : []),
+    ];
     for (
       let i = state.game.minVote;
       i <= state.game.maxVote;
       i += state.game.step
     ) {
-      console.log({ r });
       r.push(i);
     }
-
-    console.log({ r });
     return r;
   };
 
@@ -99,18 +99,15 @@ const UserDisplayRow = ({ voted, user, isLowest, isHighest }) => {
         tileOptions={tileOptions}
       />
       <Border />
-      {generateDisplayNumbers().map((number, index) => {
-        console.log({ number });
-        return (
-          <UserDisplaySection
-            key={`estimate-user-row-number-${index}`}
-            user={user}
-            value={number.toFixed(2)}
-            disabled={!(number === user.vote && state.game.reveal)}
-            tileOptions={tileOptions}
-          />
-        );
-      })}
+      {generateDisplayNumbers().map((number, index) => (
+        <UserDisplaySection
+          key={`estimate-user-row-number-${index}`}
+          user={user}
+          value={number.toFixed(2)}
+          disabled={!(number === user.vote && state.game.reveal)}
+          tileOptions={tileOptions}
+        />
+      ))}
     </div>
   );
 };
